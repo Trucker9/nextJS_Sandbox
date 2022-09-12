@@ -1,1 +1,0 @@
-// This file can act like what is now at : 'pages\news\index.js'
