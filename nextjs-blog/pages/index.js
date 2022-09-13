@@ -1,18 +1,20 @@
 import Head from 'next/head';
 import Layout, { siteTitle } from '../components/layout';
 import utilStyles from '../styles/utils.module.css';
-import { getSortedPostsData } from '../lib/posts';
 
-export async function getStaticProps() {
-    const allPostsData = getSortedPostsData();
+
+// getServerSideProps is called at request time,
+// its parameter (context) contains request specific parameters.
+export async function getServerSideProps(context) {
+
     return {
         props: {
-            allPostsData,
+            // props for your component
         },
     };
 }
 
-export default function Home({ allPostsData }) {
+export default function Home() {
   return (
       <Layout home>
         <Head>
