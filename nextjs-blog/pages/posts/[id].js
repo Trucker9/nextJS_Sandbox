@@ -18,6 +18,7 @@ export async function getStaticPaths() {
 
     return {
         paths,
+        // fallback: https://nextjs.org/learn/basics/dynamic-routes/dynamic-routes-details
         fallback: false,
     };
 }
