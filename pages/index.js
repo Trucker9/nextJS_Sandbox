@@ -21,7 +21,7 @@ function HomePage(props) {
 
 // Code below won't be sent to the client. It will be executed ON THE SERVER SIDE.
 
-export async function getStaticProps() {
+export async function getStaticProps(context) {
 
   // process.cwd() --> Returns Current Working Directory. but in vanilla JS
   // Here we are using next, and later this code will be executed from 'root' directory. it's just how next.js works.
@@ -29,22 +29,27 @@ export async function getStaticProps() {
   const jsonData = await fs.readFile(filePath);
   const data = JSON.parse(jsonData);
 
+  // Redirect if failed to fetch data
+  if(!data) {
+    return {redirect: {
+      destination: "/somewhere"
+      }}
+  }
+  // Return 404 if there is no data.
+  if (data.product.length === 0){
+    return {notFound: true}
+  }
+
+
   return {
     props: {
       products: data.products
     },
-    // Watch line 43
     revalidate: 10
   };
 }
 
 export default HomePage;
 
-// The approach used here is ok until we find out that updating every page needs a new build and deployment.
-// Page files will be transformed into HTML files while building.
-// There is 2 methods in order to face changes
-// 1. Fetch dynamic data with react in client side (some pre-rendered data + updating data in client side)
-// 2. Tell next.js to kind of rebuild the pages every X seconds and update data with that. (IN DEV MODE, ALWAYS WILL REGENERATE)
-// More Correct: A timer will be set to 10 seconds. if a request comes in and the time has reached 10 seconds, first getStaticProps
-//               will be executed, then the page will be created again and served to the client.
+
 
