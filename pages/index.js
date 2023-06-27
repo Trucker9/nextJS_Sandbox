@@ -33,7 +33,16 @@ export async function getStaticProps() {
     props: {
       products: data.products
     },
+    // Watch line 43
+    revalidate: 10
   };
 }
 
 export default HomePage;
+
+// The approach used here is ok until we find out that updating every page needs a new build and deployment.
+// Page files will be transformed into HTML files while building.
+// There is 2 methods in order to face changes
+// 1. Fetch dynamic data with react in client side (some pre-rendered data + updating data in client side)
+// 2. Tell next.js to kind of rebuild the pages every X seconds and update data with that. (IN DEV MODE, ALWAYS WILL REGENERATE)
+
