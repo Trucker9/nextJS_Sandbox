@@ -1,15 +1,15 @@
-
 // These imports will only be used in server side code and won't be present at client side code.
-import fs from 'fs/promises';
-import path from 'path';
+import fs from "fs/promises";
+import path from "path";
 import process from "process";
 
-
 function HomePage(props) {
-    const {products} = props;
+  const { products } = props;
   return (
     <ul>
-        {products.map(prd => <li key={prd.id}>{prd.title}</li>)}
+      {products.map((prd) => (
+        <li key={prd.id}>{prd.title}</li>
+      ))}
     </ul>
   );
 }
@@ -22,34 +22,31 @@ function HomePage(props) {
 // Code below won't be sent to the client. It will be executed ON THE SERVER SIDE.
 
 export async function getStaticProps(context) {
-
   // process.cwd() --> Returns Current Working Directory. but in vanilla JS
   // Here we are using next, and later this code will be executed from 'root' directory. it's just how next.js works.
-  const filePath = path.join(process.cwd(), 'data', 'dummy-backend.json');
+  const filePath = path.join(process.cwd(), "data", "dummy-backend.json");
   const jsonData = await fs.readFile(filePath);
   const data = JSON.parse(jsonData);
 
   // Redirect if failed to fetch data
-  if(!data) {
-    return {redirect: {
-      destination: "/somewhere"
-      }}
+  if (!data) {
+    return {
+      redirect: {
+        destination: "/somewhere",
+      },
+    };
   }
   // Return 404 if there is no data.
-  if (data.product.length === 0){
-    return {notFound: true}
+  if (data.product.length === 0) {
+    return { notFound: true };
   }
-
 
   return {
     props: {
-      products: data.products
+      products: data.products,
     },
-    revalidate: 10
+    revalidate: 10,
   };
 }
 
 export default HomePage;
-
-
-
