@@ -44,10 +44,13 @@ export async function getStaticPaths() {
     paths: [
       // Pre render for p1, p2, p3
       { params: { pid: "p1" } },
-      { params: { pid: "p2" } },
-      { params: { pid: "p3" } },
     ],
-    fallback: false
+    // Setting the fallback to blocking will tell next.js to if the entered value
+    // for "pid" was not listed in the paths, generate the page with the "pid" value
+    // upon user request. It takes some time btw.
+    // We can list the frequently visited pages in the paths for better performance.
+    // You can use  fallback: true to show a loading screen. watch 5-16
+    fallback: 'blocking'
   };
 }
 

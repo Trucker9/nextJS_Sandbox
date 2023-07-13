@@ -37,7 +37,7 @@ export async function getStaticProps(context) {
     };
   }
   // Return 404 if there is no data.
-  if (data.product.length === 0) {
+  if (data.products.length === 0) {
     return { notFound: true };
   }
 
