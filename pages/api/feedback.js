@@ -14,15 +14,21 @@ function handler(req, res) {
       text: feedbackText,
     };
 
-    // store that in a database or in a file
+    // Store in file
     const filePath = path.join(process.cwd(), 'data', 'feedback.json');
     const fileData = fs.readFileSync(filePath);
     const data = JSON.parse(fileData);
     data.push(newFeedback);
     fs.writeFileSync(filePath, JSON.stringify(data));
+    // Send back
     res.status(201).json({ message: 'Success!', feedback: newFeedback });
-  } else {
-    res.status(200).json({ message: 'This works!' });
+  } else { // for GET
+   // Read from file
+   const filePath = path.join(process.cwd(), 'data', 'feedback.json');
+   const fileData = fs.readFileSync(filePath);
+   const data = JSON.parse(fileData);
+   // Send back
+    res.status(200).json({ message: data});
   }
 }
 export default handler;
