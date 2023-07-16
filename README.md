@@ -127,6 +127,82 @@ The image `<Image />` component of next.js:
 4. Read docs, has more loading features.
 > You have to use Them.
 
+## API route project notes
+- Don't forget server side validation 
+
+### Adding Database, MongoDB
+- He used mongoDB package which is kina ass. so I didn't take note. But I think primsa is a package worth looking. works with next.js i think 
+
+#### DB util file
+- Separate db functions...
+```javascript
+// db-util.js
+import { MongoClient } from "mongodb";
+
+export async function connectDatabase() {
+  const client = await MongoClient.connect("URL_HERE");
+
+  return client;
+}
+
+export async function insertDocument(client, collection, document) {
+  const db = client.db();
+
+  const result = await db.collection(collection).insertOne(document);
+
+  return result;
+}
+
+export async function getAllDocuments(client, collection, sort) {
+  const db = client.db();
+
+  const documents = await db
+    .collection(collection)
+    .find()
+    .sort(sort)
+    .toArray();
+
+  return documents;
+}
+```
+
+#### Error handling example
+
+```javascript
+import { connectDatabase, insertDocument } from '../../helpers/db-util';
+async function handler(req, res) {
+   if (req.method === 'POST') {
+      const userEmail = req.body.email;
+
+      if (!userEmail || !userEmail.includes('@')) {
+         res.status(422).json({ message: 'Invalid email address.' });
+         return;
+      }
+
+      let client;
+
+      try {
+         client = await connectDatabase();
+      } catch (error) {
+         res.status(500).json({ message: 'Connecting to the database failed!' });
+         return;
+      }
+
+      try {
+         await insertDocument(client, 'newsletter', { email: userEmail });
+         client.close();
+      } catch (error) {
+         res.status(500).json({ message: 'Inserting data failed!' });
+         return;
+      }
+
+      res.status(201).json({ message: 'Signed up!' });
+   }
+}
+
+export default handler;
+```
+
 
 
 
